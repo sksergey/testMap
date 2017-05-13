@@ -1,0 +1,34 @@
+#map {
+    height: 400px;
+    width: 90%;
+    margin: auto;
+}
+#useravatar{
+    float: left;
+    width: 50px;
+    height: 50px;
+}
+#userinfo{
+    float: right;
+}
+header{
+    height: 50px;
+    margin-top: 20px;
+}
+
+a{
+    background-color: #ffe888;
+}
+table{
+    width: 90%;
+}
+table, th, td {
+    border: 2px solid#000;
+    border-collapse: collapse;
+}
+thead{
+    background-color: #808080;
+}
+thead tr{
+    height: 50px;
+}
