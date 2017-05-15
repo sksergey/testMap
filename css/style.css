@@ -74,6 +74,10 @@ h1{
     height: 30px;
     margin-top: 20px;
 }
+.btn:hover{
+    background-color: #ffe888;
+    border: 2px solid#000000;
+}
 .form-btn{
 
 }

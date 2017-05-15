@@ -9,7 +9,7 @@
 
         public static function getUsers()
 		{
-            include ("connection.php");
+            include_once ("connection.php");
             $db = new mysqli($host, $user, $password, $database);
             if ($db->connect_error) {
                 die("Connection failed: " . $db->connect_error);
@@ -20,12 +20,12 @@
             while ($row = $result->fetch_assoc()) {
                 array_push($users, $row);
             }
-            mysqli_close($db);
+            $db->close();
             return $users;
         }
 
         public function addUser(){
-            include ("connection.php");
+            include_once ("connection.php");
             $db = new mysqli($host, $user, $password, $database);
             if($db->connect_error){
                 die("Connection failed: " . $db->connect_error);
@@ -41,6 +41,7 @@
             }
             $sql = "INSERT into users (name, address, image, lat, lng) VALUES ('$name', '$address', '$image', '$coord[lat]', '$coord[lng]')";
             $result = $db->query($sql);
+            $db->close();
             if ($result === TRUE) {
                 return "Record successfully";
             } else {
@@ -49,7 +50,7 @@
         }
 
         public function editUser($id){
-            include ("connection.php");
+            include_once ("connection.php");
                     $db = new mysqli($host, $user, $password, $database);
                     if($db->connect_error){
                         die("Connection failed: " . $db->connect_error);
@@ -66,6 +67,7 @@
                     $sql = "UPDATE users SET name = '$name' , address = '$address', image = '$image', lat = '$coord[lat]', lng = '$coord[lng]' WHERE id = $id";
                     //echo $sql;
                     $result = $db->query($sql);
+                    $db->close();
                     if ($result) {
                         return "Record successfully";
                     } else {
@@ -75,12 +77,18 @@
 
         public static function deleteUser($id){
             include ("connection.php");
+            //unlink($user['image']);
             $db = new mysqli($host, $user, $password, $database);
             if($db->connect_error){
                 die("Connection failed: " . $db->connect_error);
             }
+            $sql = "SELECT image FROM users WHERE id = $id";
+            $result = $db->query($sql);
+            $link = $result->fetch_assoc();
+            //unlink('..'.$link['image']);
             $sql = "DELETE FROM users WHERE id = ".$id;
             $result = $db->query($sql);
+            $db->close();
             if ($result === TRUE) {
                 return "Record deleted successfully";
             } else {
@@ -89,13 +97,14 @@
         }
 
         public static function getUser($id){
-            include ("connection.php");
+            include_once ("connection.php");
             $db = new mysqli($host, $user, $password, $database);
             if($db->connect_error){
                 die("Connection failed: " . $db->connect_error);
             }
             $sql = "SELECT * FROM users WHERE id = ".$id;
             $result = $db->query($sql);
+            $db->close();
             return $result->fetch_assoc();
         }
 

@@ -12,11 +12,6 @@ require_once ("formvalidation.php");
 if(!empty($_GET)) {
     $user = User::getUser($_GET['id']);
 }
-
-if (isset($_POST) && !empty($_POST['name']) && !empty($_POST['address'])) {
-    $saveuser = new User();
-    echo $saveuser->editUser($_POST['id']);
-}
 ?>
 <!DOCTYPE html>
 <html>
@@ -29,7 +24,12 @@ if (isset($_POST) && !empty($_POST['name']) && !empty($_POST['address'])) {
 <header>
     <a href="\app\users.php">Back</a> &nbsp
 </header>
-
+<?
+if (isset($_POST) && !empty($_POST['name']) && !empty($_POST['address'])) {
+    $saveuser = new User();
+    echo $saveuser->editUser($_POST['id']);
+}
+?>
 <h1>Update user</h1>
 
 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post" enctype="multipart/form-data" class="user-form">
