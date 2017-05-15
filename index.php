@@ -29,9 +29,9 @@
 <div id="map"></div>
 <script>
     function initMap() {
-        var poz = {lat: 50.0166015, lng: 36.2276896};
+        var poz = {lat: 50.0071481, lng: 36.2373511};
         var map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 16,
+            zoom: 12,
             center: poz
         });
 
@@ -52,7 +52,7 @@
             content: contentString
         });
 
-        var markerpoz = {lat: <?= $user['lat']?>, lng: <?= $user['lng']?>};
+        var markerpoz = {lat: <?if($user['lat']) echo $user['lat']; else echo '0'?>, lng: <?if($user['lng']) echo $user['lng']; else echo '0'?>};
         markers[i] = new google.maps.Marker({
             position: markerpoz,
             map: map,

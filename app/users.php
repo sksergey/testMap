@@ -7,20 +7,17 @@
  */
     require_once ("autoload.php");
 ?>
-<?= 'hello, its users.php'?>
-
 <!DOCTYPE html>
 <html>
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/modal.css" rel="stylesheet">
 </head>
 <body>
 <header>
-   <a href="\index.php">Back</a> &nbsp; <a href="\app\adduser.php">Add new user</a>
+   <a href="\index.php">Back</a> &nbsp; <a href="\app\createuser.php">Add new user</a>
 </header>
-<?
-   $users = User::getUsers();
-?>
 <table>
     <thead>
         <tr>
@@ -30,16 +27,63 @@
             <th>Action</th>
         </tr>
     </thead>
-<? foreach ($users as $user){ ?>
+<? $users = User::getUsers();
+    foreach ($users as $user){ ?>
     <tr>
-        <td><img src="<?= $user[image]?>" alt=""></td>
-        <td><?= $user[name]?></td>
-        <td><?= $user[address]?></td>
-        <td><a href="\app\edit.php">Edit</a> &nbsp; <a href="\app\"></a></td>
+        <td class="table-image"><img src="<?= $user['image']?>" alt=""></td>
+        <td><div><?= $user['name']?></div></td>
+        <td><div><?= $user['address']?></div></td>
+        <td><a href="\app\updateuser.php?id=<?= $user['id']?>">Edit</a> &nbsp; <a href="#" onclick="openModal(<?= $user['id']?>, '<?= $user['name']?>')" >Delete</a></td>
     </tr>
     <? } ?>
 </table>
 
+<div id="openModal" class="modalDialog">
+    <div>
+        <header class="modal-header">
+            <p1>Question</p1>
+            <div class="close" onclick="closeModal()">X</div>
+        </header>
+        <img src="/images/question.png" alt="" id="question">
+        <div id="question-text">
+            Delete <?= "any name here"?> user?
+        </div>
+        <div id="confirm">
+            <button type="button" class="btn modal-btn" name="delete_ok" onclick="deleteUser()">Yes</button>
+            <button type="button" class="btn modal-btn" onclick="closeModal()">No</button>
+            <input type="hidden" name="user_id" value="" id="input_id">
+        </div>
+    </div>
+</div>
+
+<script>
+    function openModal(id, name) {
+        document.getElementById("input_id").value = id;
+        document.getElementById("question-text").innerHTML = "Delete " + name + " user?";
+        var modal = document.getElementById("openModal");
+        modal.style.display = "block";
+        modal.style.pointerEvents = "auto";
+    }
+
+    function closeModal() {
+       var modal = document.getElementById("openModal");
+        modal.style.display = "none";
+        modal.style.pointerEvents = "none";
+    }
+
+    function deleteUser(){
+            closeModal();
+            var id = document.getElementById("input_id");
+            var xrequest = new XMLHttpRequest();
+            xrequest.open("GET", "deleteuser.php?id="+id.value, true);
+            xrequest.send();
+
+            xrequest.onload = function() {
+                alert(this.responseText);
+                window.location.href="users.php";
+            };
+    }
+</script>
 
 </body>
 </html>

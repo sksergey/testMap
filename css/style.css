@@ -19,16 +19,61 @@ header{
 a{
     background-color: #ffe888;
 }
-table{
+table, form{
     width: 90%;
+    margin: auto;
+}
+table{
+    border: 2px solid #000;
 }
 table, th, td {
-    border: 2px solid#000;
     border-collapse: collapse;
+    font-size: 18px;
 }
-thead{
+td {
+    border-left: 2px solid #000;
+    border-right: 2px solid #000;
+    text-align: left;
+    padding: 8px;
+}
+thead, th{
     background-color: #808080;
+    border: 2px solid #000;
 }
 thead tr{
     height: 50px;
+}
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+.table-image{
+    width: 120px;
+    height: auto;
+}
+.table-image>img {
+    width: 100px;
+    height: 100px;
+}
+td div{
+    margin-left: 5%;
+}
+h1{
+    margin-left: 5%;
+}
+.text-input{
+    width: 45%;
+    height: 30px;
+    font-size: 16px;
+    border: 2px solid#000;
+}
+.error{
+    color: #f00;
+}
+.btn{
+    width: 100px;
+    height: 30px;
+    margin-top: 20px;
+}
+.form-btn{
+
 }

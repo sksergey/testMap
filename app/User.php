@@ -10,11 +10,14 @@
         public static function getUsers()
 		{
             include ("connection.php");
-            $db = mysqli_connect($host, $user, $password, $database) or die("Error " . mysqli_error($db));
-            $query = "SELECT * FROM users";
-            $result = mysqli_query($db, $query);
+            $db = new mysqli($host, $user, $password, $database);
+            if ($db->connect_error) {
+                die("Connection failed: " . $db->connect_error);
+            }
+            $sql = "SELECT * FROM users";
+            $result = $db->query($sql);
             $users = [];
-            while ($row = mysqli_fetch_assoc($result)) {
+            while ($row = $result->fetch_assoc()) {
                 array_push($users, $row);
             }
             mysqli_close($db);
@@ -22,22 +25,81 @@
         }
 
         public function addUser(){
-
+            include ("connection.php");
+            $db = new mysqli($host, $user, $password, $database);
+            if($db->connect_error){
+                die("Connection failed: " . $db->connect_error);
+            }
+            $name = $_POST['name'];
+            $address = $_POST['address'];
+            $coord = $this->get_latitude_longitude($address);
+            if(isset($_FILES) && ($_FILES['image']['size'] != 0)){
+                $image = $this->saveImage();
+            }
+            else{
+                $image = "/images/question.png";
+            }
+            $sql = "INSERT into users (name, address, image, lat, lng) VALUES ('$name', '$address', '$image', '$coord[lat]', '$coord[lng]')";
+            $result = $db->query($sql);
+            if ($result === TRUE) {
+                return "Record successfully";
+            } else {
+                return "Error record: " . $db->error;
+            }
         }
 
-        public function deleteUser($id){
+        public function editUser($id){
+            include ("connection.php");
+                    $db = new mysqli($host, $user, $password, $database);
+                    if($db->connect_error){
+                        die("Connection failed: " . $db->connect_error);
+                    }
+                    $name = $_POST['name'];
+                    $address = $_POST['address'];
+                    $coord = $this->get_latitude_longitude($address);
+                    if(isset($_FILES) && ($_FILES['image']['size'] != 0)){
+                        $image = $this->saveImage();
+                    }
+                    else{
+                        $image = "/images/question.png";
+                    }
+                    $sql = "UPDATE users SET name = '$name' , address = '$address', image = '$image', lat = '$coord[lat]', lng = '$coord[lng]' WHERE id = $id";
+                    //echo $sql;
+                    $result = $db->query($sql);
+                    if ($result) {
+                        return "Record successfully";
+                    } else {
+                        return "Error record: " . $db->error;
+                    }
+                }
 
+        public static function deleteUser($id){
+            include ("connection.php");
+            $db = new mysqli($host, $user, $password, $database);
+            if($db->connect_error){
+                die("Connection failed: " . $db->connect_error);
+            }
+            $sql = "DELETE FROM users WHERE id = ".$id;
+            $result = $db->query($sql);
+            if ($result === TRUE) {
+                return "Record deleted successfully";
+            } else {
+                return "Error deleting record: " . $db->error;
+            }
         }
 
-        public function getUser($id){
-
+        public static function getUser($id){
+            include ("connection.php");
+            $db = new mysqli($host, $user, $password, $database);
+            if($db->connect_error){
+                die("Connection failed: " . $db->connect_error);
+            }
+            $sql = "SELECT * FROM users WHERE id = ".$id;
+            $result = $db->query($sql);
+            return $result->fetch_assoc();
         }
 
-        public function edituser(){
-            require_once ("edit.php");
-        }
-
-        function get_latitude_longitude($address) {
+        public function get_latitude_longitude($address) {
             $address = trim($address);
             $address = str_replace(" ", "+", $address);
             $details_url = "http://maps.googleapis.com/maps/api/geocode/json?address=".$address."&sensor=false";
@@ -52,6 +114,17 @@
             }
             $latLng = $response['results'][0]['geometry']['location'];
             return $latLng;
+        }
+
+        public function saveImage(){
+            $target_dir = "../images/";
+            $target_file = $target_dir . basename($_FILES["image"]["name"]);
+            if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+                return "/images/".$_FILES["image"]["name"];
+            } else {
+                echo "Sorry, there was an error uploading your file.";
+                die;
+            }
         }
 
 
